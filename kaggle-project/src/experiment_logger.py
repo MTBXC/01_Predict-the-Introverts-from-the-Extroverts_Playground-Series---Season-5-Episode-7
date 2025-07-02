@@ -11,7 +11,9 @@ def log_experiment(
     model_name: str,
     params: Dict,
     cv_score: float,
-    comment: Optional[str] = None
+    comment: Optional[str] = None,
+    public_lb: Optional[float] = None,
+    oof_accuracy: Optional[float] = None
 ) -> None:
     """
     Loguje eksperyment do pliku CSV.
@@ -23,9 +25,11 @@ def log_experiment(
         'model_name': model_name,
         'params': str(params),
         'cv_score': cv_score,
-        'comment': comment if comment is not None else ''
+        'comment': comment if comment is not None else '',
+        'public_lb': public_lb if public_lb is not None else '',
+        'oof_accuracy': oof_accuracy if oof_accuracy is not None else ''
     }
-    columns = ['timestamp', 'experiment_name', 'model_name', 'params', 'cv_score', 'comment']
+    columns = ['timestamp', 'experiment_name', 'model_name', 'params', 'cv_score', 'comment', 'public_lb', 'oof_accuracy']
     file_exists = os.path.isfile(LOG_FILE)
     df = pd.DataFrame([entry], columns=columns)
     if not file_exists:
@@ -38,6 +42,7 @@ def load_experiments() -> pd.DataFrame:
     """
     Ładuje logi eksperymentów jako DataFrame.
     """
+    columns = ['timestamp', 'experiment_name', 'model_name', 'params', 'cv_score', 'comment', 'public_lb', 'oof_accuracy']
     if not os.path.isfile(LOG_FILE):
-        return pd.DataFrame(columns=['timestamp', 'experiment_name', 'model_name', 'params', 'cv_score', 'comment'])
+        return pd.DataFrame(columns=columns)
     return pd.read_csv(LOG_FILE) 
